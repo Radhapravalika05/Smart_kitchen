@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Kitchen</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="loader" id="loader"></div>
+
+<div class="navbar">
+  <div class="navbar-left">
+    <img src="https://th.bing.com/th/id/R.ba7b68de8c4c6778919bd58ec6ba10aa?rik=DI076syhCuayJw&riu=http%3a%2f%2fgetwallpapers.com%2fwallpaper%2ffull%2f3%2f6%2fd%2f1184336-healthy-food-wallpaper-2048x1536-for-phone.jpg&ehk=vevsuth0mYzHpOOOWYC3aw68sESOzzXSCT7o4dXPQVE%3d&risl=&pid=ImgRaw&r=0" alt="Logo" style="height:50px;">
+  </div>
+  <div class="navbar-right">
+    <a href="#home">Home</a>
+    <a href="#recipes">Famous Recipes</a>
+    <a href="#suggest">Ingredient Suggestions</a>
+    <a href="#about">About</a>
+  </div>
+</div>
+
+<section class="hero" id="home">
+  <h2>Welcome to Smart Kitchen</h2>
+  <h3>Cook Smart. Eat Healthy. Waste Less.</h3>
+  <a class="btn" href="#suggest">Start Cooking →</a>
+</section>
+
+<section class="section" id="recipes">
+  <h1>Famous Recipes</h1>
+  <div class="recipe-list">
+    <div class="recipe-card">
+      <img src="https://indianfoods.co.in/wp-content/uploads/2023/08/pasta.jpg" alt="Pasta">
+      <h3>Italian White Sauce Pasta</h3>
+      <p>Creamy & delicious!</p>
+    </div>
+    <div class="recipe-card">
+      <img src="https://1.bp.blogspot.com/-3atUVHlsE0U/YIcgH7jHOCI/AAAAAAAASIE/1TxRFFlU5qEK-X7iZry8oQq6f8BivC9DgCLcBGAsYHQ/s1200/Biryani-1.jpg" alt="Biryani">
+      <h3>Hyderabadi Biryani</h3>
+      <p>India's royal dish.</p>
+    </div>
+    <div class="recipe-card">
+      <img src="https://www.inspiredtaste.net/wp-content/uploads/2016/07/Pancake-Recipe-2-1200.jpg" alt="Pancakes">
+      <h3>Fluffy Pancakes</h3>
+      <p>Perfect breakfast treat.</p>
+    </div>
+  </div>
+</section>
+
+<section class="section suggest" id="suggest">
+  <h1>Ingredient Based Recipe Suggestions</h1>
+  <input type="text" id="ingredients" placeholder="eg: rice, tomato, onion">
+  <button onclick="searchRecipes()">Get Recipes</button>
+  <h3 style="color: #ff5722;">Suggested Recipes:</h3>
+  <ul id="result"></ul>
+</section>
+
+<section class="section" id="about">
+  <h1>About Smart Kitchen</h1>
+  <p>
+    Smart Kitchen is a web-based platform designed to make cooking easier, faster, and more efficient.<br><br>
+    It helps users discover recipes based on the ingredients they already have at home, reducing food waste and saving time.<br><br>
+
+    <b>Ingredient-Based Suggestions:</b> Enter the ingredients you have, and get instant recipe ideas.<br>
+    <b>Famous Recipes:</b> Explore popular and easy-to-cook dishes from different cuisines.<br>
+    <b>Healthy Cooking:</b> Learn to cook delicious meals while maintaining a healthy diet.<br>
+    <b>User-Friendly Interface:</b> Simple and intuitive design suitable for beginners and experienced cooks alike.<br><br>
+    
+    Smart Kitchen aims to empower everyone in the kitchen, minimize food waste, and make cooking a fun and stress-free experience.
+  </p>
+</section>
+
+<section class="section" id="contact">
+  <h1>Contact Us</h1>
+  <p>Repati Kosam Team</p>
+  <p>+91 9063566589</p>
+  <p>varmaradha933@gmail.com</p>
+  <div class="social-icons">
+    <a href="https://www.instagram.com/vismaifoodies/">
+      <img src="https://imagepng.org/wp-content/uploads/2017/08/instagram-icone-icon.png" alt="Instagram">
+    </a>
+    <a href="https://www.youtube.com/@VismaiFood">
+      <img src="https://tse2.mm.bing.net/th/id/OIP.UVryA4nuAoLPpAzIekGZwAHaHa?cb=ucfimg2&ucfimg=1&rs=1&pid=ImgDetMain&o=7&rm=3" alt="YouTube">
+    </a>
+    <a href="https://x.com/therealvismai">
+      <img src="https://th.bing.com/th/id/R.c418de754ed3a8c6638de1875ba95323?rik=nLAu3Z%2f0QUb%2fVw&riu=http%3a%2f%2ficons.iconarchive.com%2ficons%2fiynque%2fios7-style%2f1024%2fTwitter-icon.png&ehk=eD3Hc5yQAyP3AKPJoYHB8yeWKwKdaVAswR5kxmodex4%3d&risl=&pid=ImgRaw&r=0" alt="X">
+    </a>
+  </div>
+</section>
+
+<!-- ⭐ SCRIPT MUST BE AT BOTTOM ⭐ -->
+<script>
+function searchRecipes() {
+    let input = document.getElementById("ingredients").value;
+    let ingredients = input.split(",").map(x => x.trim());
+
+    fetch("http://127.0.0.1:5000/get_recipes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ingredients: ingredients })
+    })
+    .then(response => response.json())
+    .then(data => {
+        let output = document.getElementById("result");
+        output.innerHTML = "";
+
+        if (!data.recipes || data.recipes.length === 0) {
+            output.innerHTML = "<li>No recipes found!</li>";
+            return;
+        }
+
+        data.recipes.forEach(recipe => {
+            output.innerHTML += `<li>${recipe.title ? recipe.title : recipe}</li>`;
+        });
+    })
+    .catch(error => console.log(error));
+}
+</script>
+
+</body>
+</html>
